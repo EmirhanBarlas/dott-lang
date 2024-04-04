@@ -13,7 +13,7 @@ class Program
                 string line;
                 while ((line = sr.ReadLine()) != null)
                 {
-                    Interpret(line);
+                    Interpret(line.Trim()); // Satırın başındaki ve sonundaki boşlukları kaldırıyoruz
                 }
             }
         }
@@ -25,30 +25,60 @@ class Program
 
     static void Interpret(string line)
     {
-        if (line.Contains("...."))
+        if (line.StartsWith("..."))
         {
-            // "...." işareti bulunduğunda, bu işaretin arasındaki sayıları toplayacak olan fonksiyon.
-            string[] parts = line.Split(new string[] { "...." }, StringSplitOptions.None);
+            // "..." ile başlayan ifadeleri doğrudan yazdırıyoruz
+            HandlePrint(line.Substring(3));
+        }
+        else if (line.Contains(".."))
+        {
+            // ".." işareti bulunduğunda, bu işaretin arasındaki sayıları topla
+            string[] parts = line.Split(new string[] { ".." }, StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length == 2)
             {
-                int baslangic = int.Parse(parts[0].Trim());
-                int bitis = int.Parse(parts[1].Trim());
+                string baslangicStr = parts[0].Trim();
+                string bitisStr = parts[1].Trim();
 
-                int toplam = baslangic + bitis;
-                HandlePrint(toplam.ToString());
+                int baslangic, bitis;
+                if (int.TryParse(baslangicStr, out baslangic) && int.TryParse(bitisStr, out bitis))
+                {
+                    int toplam = baslangic + bitis;
+                    HandlePrint(toplam.ToString());
+                }
+                else
+                {
+                    Console.WriteLine($"Hata: Geçersiz sayı formatı: {line}");
+                }
             }
             else
             {
-                Console.WriteLine($"hata: {line}");
+                Console.WriteLine($"Söz dizimi hatası: {line}");
             }
         }
-        else if (line.StartsWith("..."))
+        else if (line.Contains("."))
         {
-            HandlePrint(line.Substring(3));
-        }
-        else if (line.StartsWith("."))
-        {
-            HandleVariableDeclaration(line.Substring(1));
+            // "." işareti bulunduğunda, bu işaretin sağında ve solunda bulunan sayıları çıkarıcak olan fonksiyon
+            string[] parts = line.Split('.');
+            if (parts.Length == 2)
+            {
+                string solStr = parts[0].Trim();
+                string sagStr = parts[1].Trim();
+
+                int sol, sag;
+                if (int.TryParse(solStr, out sol) && int.TryParse(sagStr, out sag))
+                {
+                    int fark = sol - sag;
+                    HandlePrint(fark.ToString());
+                }
+                else
+                {
+                    Console.WriteLine($"Hata: Geçersiz sayı formatı: {line}");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Söz dizimi hatası: {line}");
+            }
         }
         else
         {
@@ -60,20 +90,5 @@ class Program
     static void HandlePrint(string text)
     {
         Console.WriteLine(text);
-    }
-
-    static void HandleVariableDeclaration(string expression)
-    {
-        string[] parts = expression.Split('=');
-        if (parts.Length == 2)
-        {
-            string varName = parts[0].Trim();
-            string varValue = parts[1].Trim();
-            Console.WriteLine($"Değişken tanımlandı: {varName} = {varValue}");
-        }
-        else
-        {
-            Console.WriteLine($"Söz dizimi hatası: {expression}");
-        }
     }
 }
