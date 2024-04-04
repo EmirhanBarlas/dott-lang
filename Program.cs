@@ -13,7 +13,7 @@ class Program
                 string line;
                 while ((line = sr.ReadLine()) != null)
                 {
-                    Interpret(line.Trim()); // Satırın başındaki ve sonundaki boşlukları kaldırıyoruz
+                    Interpret(line.Trim());
                 }
             }
         }
@@ -27,12 +27,12 @@ class Program
     {
         if (line.StartsWith("..."))
         {
-            // "..." ile başlayan ifadeleri doğrudan yazdırıyoruz
+            // "..." ile başlayan ifadeleri console.writeline olarak yazdırıyo
             HandlePrint(line.Substring(3));
         }
         else if (line.Contains(".."))
         {
-            // ".." işareti bulunduğunda, bu işaretin arasındaki sayıları topla
+            // ".." işareti arasındaki sayıları toplayan fonksiyon "2 .. 2" çıktısı 4 olarak olucak
             string[] parts = line.Split(new string[] { ".." }, StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length == 2)
             {
@@ -57,7 +57,7 @@ class Program
         }
         else if (line.Contains("."))
         {
-            // "." işareti bulunduğunda, bu işaretin sağında ve solunda bulunan sayıları çıkarıcak olan fonksiyon
+            // "." işareti çıkarma fonksiyonu soldaki sayı ve sağdaki sayıyı çıkarır "2 . 2" çıktısı 0 olucak
             string[] parts = line.Split('.');
             if (parts.Length == 2)
             {
@@ -85,8 +85,6 @@ class Program
             Console.WriteLine($"Söz dizimi hatası: {line}");
         }
     }
-
-    // konsola yazdıracağımız kısım
     static void HandlePrint(string text)
     {
         Console.WriteLine(text);
